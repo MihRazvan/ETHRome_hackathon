@@ -2,11 +2,14 @@
  * Status command - Check deployment status
  */
 
-import { createPublicClient, http } from 'viem'
+import { createPublicClient, http, type Address } from 'viem'
 import { sepolia, mainnet } from 'viem/chains'
 import { Logger } from '../../lib/logger.js'
 import { loadConfig, type Config } from '../../lib/config.js'
 import { detectNextVersion, getSubdomainInfo } from '../../lib/ens/version.js'
+import { getContenthash } from '../../lib/ens/contenthash.js'
+import { getIPFSUrls } from '../../lib/ipfs/upload.js'
+import { PUBLIC_RESOLVER_ADDRESS } from '../../lib/ens/ens.js'
 
 export interface StatusOptions extends Partial<Config> {
   subdomain?: string
@@ -58,6 +61,37 @@ export async function statusCommand(options: StatusOptions): Promise<void> {
         'Fuses': info.fuses,
         'Expiry': new Date(Number(info.expiry) * 1000).toISOString(),
       })
+      logger.newline()
+
+      // Query contenthash
+      logger.section('📦 Content')
+      const resolverAddress = PUBLIC_RESOLVER_ADDRESS[config.network] as Address
+      const contenthash = await getContenthash(
+        options.subdomain,
+        resolverAddress,
+        publicClient
+      )
+
+      if (contenthash.type === 'empty') {
+        logger.warn('No contenthash set')
+        logger.log('  The subdomain exists but has no content configured.')
+      } else {
+        logger.success(`Contenthash: ${contenthash.contenthash}`)
+
+        if (contenthash.cid) {
+          logger.log(`  Type: ${contenthash.type.toUpperCase()}`)
+          logger.log(`  CID: ${contenthash.cid}`)
+          logger.newline()
+
+          logger.log('Accessible at:')
+          const urls = getIPFSUrls(contenthash.cid, options.subdomain)
+          for (const url of urls) {
+            logger.log(`  ${url}`)
+          }
+        } else {
+          logger.log(`  Type: ${contenthash.type}`)
+        }
+      }
     } else {
       // Show version summary
       logger.section('📦 Deployed Versions')
