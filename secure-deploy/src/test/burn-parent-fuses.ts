@@ -155,27 +155,29 @@ async function main() {
   console.log('')
 
   // Define fuses to burn
-  const PARENT_FUSES = FUSES.CANNOT_UNWRAP | FUSES.PARENT_CANNOT_CONTROL
+  // Note: PARENT_CANNOT_CONTROL is not an "owner controlled fuse"
+  // It becomes available once CANNOT_UNWRAP is burned
+  // So we only need to burn CANNOT_UNWRAP (owner-controlled fuse)
+  const OWNER_CONTROLLED_FUSES = FUSES.CANNOT_UNWRAP
 
-  console.log('🔥 Fuses to Burn:')
+  console.log('🔥 Fuse to Burn:')
   console.log('━'.repeat(70))
   console.log('')
   console.log('  CANNOT_UNWRAP (1)')
   console.log('    → Domain will be permanently wrapped')
   console.log('    → Cannot unwrap back to registry')
+  console.log('    → Enables PARENT_CANNOT_CONTROL for creating permanent subdomains')
   console.log('')
-  console.log('  PARENT_CANNOT_CONTROL (65536)')
-  console.log('    → Allows creating permanent subdomains')
-  console.log('    → Subdomains can have PARENT_CANNOT_CONTROL burned')
-  console.log('')
-  console.log(`  Combined value: ${PARENT_FUSES}`)
+  console.log('Note: PARENT_CANNOT_CONTROL (65536) is automatically available')
+  console.log('      once CANNOT_UNWRAP is burned. It doesn\'t need to be')
+  console.log('      explicitly burned - it\'s a parent-controlled fuse.')
   console.log('')
 
   // Check if already burned
-  const alreadyBurned = (currentFuses & PARENT_FUSES) === PARENT_FUSES
+  const alreadyBurned = (currentFuses & OWNER_CONTROLLED_FUSES) === OWNER_CONTROLLED_FUSES
 
   if (alreadyBurned) {
-    console.log('✅ These fuses are already burned!')
+    console.log('✅ CANNOT_UNWRAP is already burned!')
     console.log('   You can now create permanent subdomains.')
     console.log('')
     return
@@ -212,7 +214,7 @@ async function main() {
         address: NAME_WRAPPER_ADDRESS[sepolia.id],
         abi: wrapperAbi,
         functionName: 'setFuses',
-        args: [node, PARENT_FUSES]
+        args: [node, OWNER_CONTROLLED_FUSES]
       })
 
       console.log(`  ✓ Transaction sent: ${hash}`)
