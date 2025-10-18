@@ -11,6 +11,7 @@
     "dev": "tsx src/cli.ts",
     "test": "node --test",
     "test:ipfs": "tsx src/test/test-ipfs-simple.ts",
+    "test:ens": "tsx src/test/test-ens.ts",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
