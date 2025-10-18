@@ -97,19 +97,23 @@ async function main() {
 
   // Validate environment
   const domain = env.SEPOLIA_ENS_DOMAIN
-  const ownerAddress = env.SEPOLIA_OWNER_ADDRESS as Address
+  const signerAddress = env.SEPOLIA_OWNER_ADDRESS as Address
+  const safeAddress = env.SAFE_ADDRESS as Address
   const privateKey = env.SEPOLIA_OWNER_PK?.startsWith('0x')
     ? env.SEPOLIA_OWNER_PK as Hex
     : `0x${env.SEPOLIA_OWNER_PK}` as Hex
   const rpcUrl = env.SEPOLIA_RPC_URL || 'https://ethereum-sepolia-rpc.publicnode.com'
 
-  if (!domain || !ownerAddress || !privateKey) {
+  if (!domain || !signerAddress || !privateKey) {
     console.error('❌ Missing configuration in .env:')
     console.error('  SEPOLIA_ENS_DOMAIN')
     console.error('  SEPOLIA_OWNER_ADDRESS')
     console.error('  SEPOLIA_OWNER_PK')
     process.exit(1)
   }
+
+  // Use Safe as owner if configured, otherwise use signer
+  const ownerAddress = safeAddress || signerAddress
 
   // Get CID from last upload
   let cid: string
@@ -139,7 +143,10 @@ async function main() {
   console.log('━'.repeat(70))
   console.log('')
   console.log(`  Domain: ${domain}`)
-  console.log(`  Owner: ${ownerAddress}`)
+  console.log(`  Signer: ${signerAddress}`)
+  if (safeAddress) {
+    console.log(`  Safe (subdomain owner): ${safeAddress}`)
+  }
   console.log(`  Network: Sepolia`)
   console.log(`  RPC: ${rpcUrl}`)
   console.log('')
@@ -180,21 +187,28 @@ async function main() {
   console.log('  Checking existing subdomains...')
 
   let nextVersion = 0
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 200; i++) {
     const versionLabel = `v${i}`
     const subdomainNode = namehash(normalize(`${versionLabel}.${domain}`))
     const tokenId = BigInt(subdomainNode)
 
     try {
-      await publicClient.readContract({
+      const owner = await publicClient.readContract({
         address: NAME_WRAPPER_ADDRESS[sepolia.id],
         abi: wrapperAbi,
         functionName: 'ownerOf',
         args: [tokenId]
       })
+      // Check if it's actually owned (not zero address)
+      if (owner === '0x0000000000000000000000000000000000000000') {
+        // Subdomain doesn't exist
+        break
+      }
+      // If we got here, the subdomain exists
       console.log(`    Found: ${versionLabel}.${domain}`)
+      nextVersion = i + 1  // Next version is one after this
     } catch (error) {
-      nextVersion = i
+      // Subdomain doesn't exist, this is the next available version
       break
     }
   }
