@@ -12,9 +12,11 @@ import { getFullCommitInfo, isWorkingDirectoryClean } from '../../lib/git/commit
 import { detectNextVersion, buildFullDomain } from '../../lib/ens/version.js'
 import { createDeploymentPlan } from '../../lib/ens/deploy.js'
 import { createSubdomainDirect } from '../../lib/ens/execute.js'
+import { checkParentFuses, burnParentFuses } from '../../lib/ens/fuses-check.js'
 import { initSafeClient, sendSafeTransaction, getSafeTransactionUrl } from '../../lib/safe/client.js'
 import { generateSafeDescription } from '../../lib/safe/metadata.js'
 import { DeployError, GitError } from '../../lib/errors.js'
+import * as readline from 'readline/promises'
 
 export interface DeployOptions extends Partial<Config> {
   directory: string
@@ -168,8 +170,57 @@ export async function deployCommand(options: DeployOptions): Promise<void> {
       return
     }
 
-    // Step 7: Execute deployment
-    logger.section('✅ Step 7: Execute Deployment')
+    // Step 7: Check parent fuses
+    logger.section('🔍 Step 7: Check Parent Domain')
+    const fuseCheck = await checkParentFuses(config.ensDomain!, publicClient, chain.id)
+
+    if (fuseCheck.needsBurn) {
+      logger.warn('⚠️  Parent domain needs CANNOT_UNWRAP fuse burned')
+      logger.log('')
+      logger.log('This fuse enables permanent subdomain creation with immutable fuses.')
+      logger.log('Once burned, this change is PERMANENT and IRREVERSIBLE.')
+      logger.log('')
+      logger.log('What this means:')
+      logger.log('  ✅ You can create permanent, immutable subdomains')
+      logger.log('  ✅ Subdomains can be locked with PARENT_CANNOT_CONTROL')
+      logger.log('  ❌ You cannot unwrap the domain back to registry')
+      logger.newline()
+
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+      })
+
+      const answer = await rl.question('Burn CANNOT_UNWRAP fuse now? [y/N]: ')
+      rl.close()
+
+      if (answer.toLowerCase() !== 'y' && answer.toLowerCase() !== 'yes') {
+        logger.error('Deployment cancelled - parent fuses must be burned first')
+        logger.log('You can burn them manually with: npm run burn-parent-fuses -- --execute')
+        process.exit(1)
+      }
+
+      const burnSpinner = logger.spinner('Burning CANNOT_UNWRAP fuse...')
+      burnSpinner.start()
+
+      const burnHash = await burnParentFuses(
+        config.ensDomain!,
+        config.ownerPrivateKey!,
+        config.rpcUrl!,
+        chain.id,
+        publicClient
+      )
+
+      burnSpinner.succeed('CANNOT_UNWRAP fuse burned')
+      logger.log(`  TX Hash: ${burnHash}`)
+      logger.newline()
+    } else {
+      logger.success('Parent domain has CANNOT_UNWRAP fuse burned')
+      logger.newline()
+    }
+
+    // Step 8: Execute deployment
+    logger.section('✅ Step 8: Execute Deployment')
 
     // Transaction 1: Create subdomain (direct execution by parent owner)
     const spinner1 = logger.spinner('Creating subdomain (parent owner)...')
@@ -214,10 +265,17 @@ export async function deployCommand(options: DeployOptions): Promise<void> {
     logger.log('  3. Execute transaction')
     logger.newline()
 
-    logger.log('After execution, your site will be live at:')
-    for (const url of getIPFSUrls(ipfsResult.cid, fullDomain)) {
-      logger.log(`  ${url}`)
+    logger.log('Your site will be accessible at:')
+    const urls = getIPFSUrls(ipfsResult.cid, fullDomain)
+    logger.log(`  ${urls[0]} ✅ (works immediately)`)
+    for (let i = 1; i < urls.length; i++) {
+      logger.log(`  ${urls[i]}`)
     }
+    logger.newline()
+
+    logger.warn('⚠️  ENS Gateway Propagation')
+    logger.log('  ENS gateways (*.eth.limo, *.eth.link) may take 5-15 minutes')
+    logger.log('  to propagate. Use the IPFS gateway while waiting.')
     logger.newline()
 
   } catch (error: any) {

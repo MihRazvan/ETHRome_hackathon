@@ -83,16 +83,22 @@ export async function uploadToIPFS(
 
 /**
  * Get IPFS gateway URLs for a CID
+ * Returns 4 gateways in priority order
  */
 export function getIPFSUrls(cid: string, ensDomain?: string): string[] {
-  const urls = [
-    `https://w3s.link/ipfs/${cid}`,
-    `https://ipfs.io/ipfs/${cid}`,
-  ]
+  const urls: string[] = []
 
+  // 1. Storacha gateway (fastest, works immediately)
+  urls.push(`https://w3s.link/ipfs/${cid}`)
+
+  // 2-3. ENS gateways (if domain provided, may take 5-15min to propagate)
   if (ensDomain) {
-    urls.unshift(`https://${ensDomain}.limo`)
+    urls.push(`https://${ensDomain}.limo`)
+    urls.push(`https://${ensDomain}.link`)
   }
+
+  // 4. Public IPFS gateway (reliable fallback)
+  urls.push(`https://ipfs.io/ipfs/${cid}`)
 
   return urls
 }
