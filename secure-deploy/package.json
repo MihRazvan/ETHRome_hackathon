@@ -1,0 +1,48 @@
+{
+  "name": "secure-deploy",
+  "version": "0.1.0",
+  "description": "Secure frontend deployment system with immutable ENS versioning and Safe multisig",
+  "type": "module",
+  "bin": {
+    "secure-deploy": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc && chmod +x ./dist/cli.js",
+    "dev": "tsx src/cli.ts",
+    "test": "node --test",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "ipfs",
+    "ens",
+    "safe",
+    "deployment",
+    "security",
+    "cli"
+  ],
+  "author": "ETHRome Hackathon Team",
+  "license": "MIT",
+  "engines": {
+    "node": "^20.10.0 || >=21.1.0"
+  },
+  "dependencies": {
+    "@ipld/car": "^5.4.2",
+    "@ipld/dag-cbor": "^9.2.4",
+    "@ucanto/client": "^9.0.1",
+    "@ucanto/core": "^10.4.0",
+    "@ucanto/principal": "^9.0.2",
+    "@ucanto/transport": "^9.2.0",
+    "blockstore-core": "^5.0.4",
+    "ipfs-unixfs": "^11.2.5",
+    "ipfs-unixfs-importer": "^15.4.0",
+    "multiformats": "^13.4.0",
+    "ox": "^0.8.7",
+    "spektr": "^0.2.0",
+    "viem": "^2.21.54"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.2"
+  }
+}
