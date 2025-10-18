@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Deploy - ETHRome Hackathon</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Hello ETHRome Hackathon!</h1>
+        <p class="subtitle">Secure Frontend Deployments with Immutable ENS Versioning</p>
+
+        <div class="content">
+            <h2>What is Secure Deploy?</h2>
+            <p>
+                A CLI tool that prevents malicious frontend deployments by combining
+                <strong>Safe multisig approvals</strong> with <strong>immutable ENS versioning</strong>.
+            </p>
+
+            <h3>Key Features:</h3>
+            <ul>
+                <li>🔒 Human verification checkpoints via Safe multisig</li>
+                <li>📦 IPFS deployment with content addressing</li>
+                <li>🏷️ Immutable ENS subdomains (v0, v1, v2...)</li>
+                <li>🔍 Git commit tracking for transparency</li>
+                <li>⛓️ ENS NameWrapper fuse burning for permanence</li>
+            </ul>
+
+            <div class="tech-stack">
+                <h3>Built with:</h3>
+                <p>Storacha • ENS • Safe • Ethereum • IPFS</p>
+            </div>
+
+            <div class="timestamp">
+                <p>Deployed at: <span id="current-time"></span></p>
+            </div>
+        </div>
+
+        <footer>
+            <p>Made with ❤️ at ETHRome 2024</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
