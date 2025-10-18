@@ -32,7 +32,7 @@ export interface DeployOptions extends Partial<Config> {
 export async function deployCommand(options: DeployOptions): Promise<void> {
   const logger = new Logger({ quiet: options.quiet, debug: options.debug })
 
-  logger.header('🚀 Secure Deploy')
+  logger.header('AUTARK')
   logger.newline()
 
   try {
@@ -304,7 +304,7 @@ export async function deployCommand(options: DeployOptions): Promise<void> {
       logger.newline()
 
       // Success!
-      logger.header('🎉 Deployment Proposal Created!')
+      logger.successBanner('DEPLOYMENT PROPOSAL CREATED')
       logger.newline()
       logger.success(`Domain: ${fullDomain}`)
       logger.log(`  IPFS CID: ${ipfsResult.cid}`)
@@ -366,7 +366,7 @@ export async function deployCommand(options: DeployOptions): Promise<void> {
       logger.newline()
 
       // Success!
-      logger.header('🎉 Subdomain Created!')
+      logger.successBanner('SUBDOMAIN CREATED')
       logger.newline()
       logger.success(`Subdomain: ${fullDomain}`)
       logger.log(`  Owner: ${config.safeAddress} (Safe)`)

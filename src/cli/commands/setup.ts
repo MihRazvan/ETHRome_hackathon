@@ -66,7 +66,7 @@ exit 0
 export async function setupCommand(options: SetupOptions): Promise<void> {
   const logger = new Logger({ quiet: options.quiet, debug: options.debug })
 
-  logger.header('⚙️  Setup secure-deploy')
+  logger.header('AUTARK')
   logger.newline()
 
   // Check if we're in a git repository
@@ -147,7 +147,7 @@ export async function setupCommand(options: SetupOptions): Promise<void> {
     logger.newline()
 
     // Success!
-    logger.header('✅ Setup Complete!')
+    logger.successBanner('SETUP COMPLETE')
     logger.newline()
 
     logger.log('Git hook installed:')

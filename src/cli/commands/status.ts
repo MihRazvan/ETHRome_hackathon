@@ -21,7 +21,7 @@ export interface StatusOptions extends Partial<Config> {
 export async function statusCommand(options: StatusOptions): Promise<void> {
   const logger = new Logger({ quiet: options.quiet, debug: options.debug })
 
-  logger.header('📊 Deployment Status')
+  logger.header('AUTARK')
   logger.newline()
 
   try {
@@ -39,7 +39,7 @@ export async function statusCommand(options: StatusOptions): Promise<void> {
       transport: http(config.rpcUrl),
     })
 
-    logger.section('📋 Configuration')
+    logger.section('Configuration')
     logger.table({
       'Network': config.network,
       'Parent Domain': config.ensDomain,
@@ -48,7 +48,7 @@ export async function statusCommand(options: StatusOptions): Promise<void> {
 
     if (options.subdomain) {
       // Show specific subdomain info
-      logger.section(`🔍 Subdomain: ${options.subdomain}`)
+      logger.section(`Subdomain: ${options.subdomain}`)
       const info = await getSubdomainInfo(options.subdomain, publicClient, chain.id)
 
       if (!info.exists) {
@@ -64,7 +64,7 @@ export async function statusCommand(options: StatusOptions): Promise<void> {
       logger.newline()
 
       // Query contenthash
-      logger.section('📦 Content')
+      logger.section('Content')
       const resolverAddress = PUBLIC_RESOLVER_ADDRESS[config.network] as Address
       const contenthash = await getContenthash(
         options.subdomain,
@@ -94,7 +94,7 @@ export async function statusCommand(options: StatusOptions): Promise<void> {
       }
     } else {
       // Show version summary
-      logger.section('📦 Deployed Versions')
+      logger.section('Deployed Versions')
       const { version, existing } = await detectNextVersion(
         config.ensDomain,
         publicClient,
