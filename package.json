@@ -4,11 +4,12 @@
   "description": "Secure frontend deployment system with immutable ENS versioning and Safe multisig",
   "type": "module",
   "bin": {
-    "secure-deploy": "./dist/cli.js"
+    "secure-deploy": "./dist/cli/index.js"
   },
   "scripts": {
-    "build": "tsc && chmod +x ./dist/cli.js",
-    "dev": "tsx src/cli.ts",
+    "build": "tsc && chmod +x ./dist/cli/index.js",
+    "dev": "tsx src/cli/index.ts",
+    "cli": "tsx src/cli/index.ts",
     "test": "node --test",
     "test:ipfs": "tsx src/test/test-ipfs-simple.ts",
     "test:ens": "tsx src/test/test-ens.ts",
@@ -39,19 +40,25 @@
   "dependencies": {
     "@safe-global/sdk-starter-kit": "^3.0.1",
     "@storacha/client": "^1.8.2",
+    "chalk": "^5.6.2",
+    "commander": "^11.1.0",
+    "cosmiconfig": "^9.0.0",
     "dotenv": "^17.2.3",
     "files-from-path": "^1.0.4",
     "multiformats": "^13.4.0",
+    "ora": "^6.3.1",
     "ox": "^0.8.7",
     "spektr": "^0.2.0",
     "varint": "^6.0.0",
-    "viem": "^2.21.54"
+    "viem": "^2.21.54",
+    "zod": "^3.25.76"
   },
   "overrides": {
     "@ipld/unixfs": "2.1.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
+    "@types/varint": "^6.0.3",
     "tsx": "^4.19.2",
     "typescript": "^5.9.2"
   }
