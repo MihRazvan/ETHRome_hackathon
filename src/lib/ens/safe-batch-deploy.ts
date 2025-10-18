@@ -118,30 +118,39 @@ export async function submitToSafeService(
   spinner.start()
 
   try {
-    const SafeApiKit = await import('@safe-global/api-kit')
-    const Safe = await import('@safe-global/protocol-kit')
+    // In Safe SDK v6+, we need to import from the correct locations
+    const { default: SafeApiKit } = await import('@safe-global/api-kit')
+    const { default: Safe } = await import('@safe-global/protocol-kit')
     const { ethers } = await import('ethers')
 
-    // Setup ethers signer
-    const provider = new ethers.JsonRpcProvider(
-      chainId === 11155111
-        ? process.env.SEPOLIA_RPC_URL
-        : process.env.MAINNET_RPC_URL
-    )
+    // Setup RPC URL
+    const rpcUrl = chainId === 11155111
+      ? process.env.SEPOLIA_RPC_URL
+      : process.env.MAINNET_RPC_URL
+
+    if (!rpcUrl) {
+      throw new Error('RPC URL not configured')
+    }
+
+    // Create ethers signer for getting address
+    const provider = new ethers.JsonRpcProvider(rpcUrl)
     const signer = new ethers.Wallet(signerPrivateKey, provider)
 
-    // Create Safe SDK instances
-    const ethAdapter = new Safe.EthersAdapter({
-      ethers,
-      signerOrProvider: signer,
-    })
+    // Create Safe API Kit instance
+    const safeApiKey = process.env.SAFE_API_KEY
+    if (!safeApiKey) {
+      throw new Error('SAFE_API_KEY not configured. Get one at https://developer.safe.global')
+    }
 
-    const safeApiKit = new SafeApiKit.default({
+    const safeApiKit = new SafeApiKit({
       chainId: BigInt(chainId),
+      apiKey: safeApiKey,
     })
 
-    const protocolKit = await Safe.default.create({
-      ethAdapter,
+    // Create Safe Protocol Kit instance (v6+ uses RPC URL directly)
+    const protocolKit = await Safe.init({
+      provider: rpcUrl,
+      signer: signerPrivateKey,
       safeAddress,
     })
 

@@ -176,6 +176,13 @@ export async function deployCommand(options: DeployOptions): Promise<void> {
     logger.section('🔍 Step 7: Detect Deployment Mode')
     const parentInfo = await getSubdomainInfo(config.ensDomain!, publicClient, chain.id)
 
+    // Debug logging
+    if (options.debug) {
+      logger.log(`  Parent owner (on-chain): ${parentInfo.owner}`)
+      logger.log(`  Safe address (config): ${config.safeAddress}`)
+      logger.log(`  Match: ${parentInfo.owner?.toLowerCase() === config.safeAddress?.toLowerCase()}`)
+    }
+
     let safeOwnsParent = options.safeOwnsParent
     if (safeOwnsParent === undefined) {
       // Auto-detect: does Safe own the parent domain?
@@ -184,11 +191,11 @@ export async function deployCommand(options: DeployOptions): Promise<void> {
 
     if (safeOwnsParent) {
       logger.success('Mode: Safe-owns-parent (batched deployment)')
-      logger.log('  Parent owner: Safe')
+      logger.log(`  Parent owner: ${parentInfo.owner}`)
       logger.log('  Both transactions will be batched together')
     } else {
       logger.success('Mode: Personal-owns-parent (two-step deployment)')
-      logger.log('  Parent owner: Personal wallet')
+      logger.log(`  Parent owner: ${parentInfo.owner}`)
       logger.log('  Subdomain creation first, then Safe sets contenthash')
     }
     logger.newline()
@@ -209,34 +216,52 @@ export async function deployCommand(options: DeployOptions): Promise<void> {
       logger.log('  ❌ You cannot unwrap the domain back to registry')
       logger.newline()
 
-      const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      })
-
-      const answer = await rl.question('Burn CANNOT_UNWRAP fuse now? [y/N]: ')
-      rl.close()
-
-      if (answer.toLowerCase() !== 'y' && answer.toLowerCase() !== 'yes') {
+      if (safeOwnsParent) {
+        // Safe owns parent - fuses must be burned via Safe transaction
+        logger.error('Cannot burn fuses automatically - Safe owns the parent domain')
+        logger.log('')
+        logger.log('To burn fuses:')
+        logger.log('  1. Go to Safe UI: ' + getSafeTransactionUrl(config.safeAddress!, chain.id))
+        logger.log('  2. Create a transaction to NameWrapper.setFuses()')
+        logger.log('  3. Burn CANNOT_UNWRAP fuse (value: 1)')
+        logger.log('  4. Approve and execute with threshold signers')
+        logger.log('')
+        logger.log('Or manually via ENS Manager:')
+        logger.log(`  https://app.ens.domains/${config.ensDomain}`)
+        logger.newline()
         logger.error('Deployment cancelled - parent fuses must be burned first')
-        logger.log('You can burn them manually with: npm run burn-parent-fuses -- --execute')
         process.exit(1)
+      } else {
+        // Personal wallet owns parent - can burn directly
+        const rl = readline.createInterface({
+          input: process.stdin,
+          output: process.stdout,
+        })
+
+        const answer = await rl.question('Burn CANNOT_UNWRAP fuse now? [y/N]: ')
+        rl.close()
+
+        if (answer.toLowerCase() !== 'y' && answer.toLowerCase() !== 'yes') {
+          logger.error('Deployment cancelled - parent fuses must be burned first')
+          logger.log('You can burn them manually with: npm run burn-parent-fuses -- --execute')
+          process.exit(1)
+        }
+
+        const burnSpinner = logger.spinner('Burning CANNOT_UNWRAP fuse...')
+        burnSpinner.start()
+
+        const burnHash = await burnParentFuses(
+          config.ensDomain!,
+          config.ownerPrivateKey!,
+          config.rpcUrl!,
+          chain.id,
+          publicClient
+        )
+
+        burnSpinner.succeed('CANNOT_UNWRAP fuse burned')
+        logger.log(`  TX Hash: ${burnHash}`)
+        logger.newline()
       }
-
-      const burnSpinner = logger.spinner('Burning CANNOT_UNWRAP fuse...')
-      burnSpinner.start()
-
-      const burnHash = await burnParentFuses(
-        config.ensDomain!,
-        config.ownerPrivateKey!,
-        config.rpcUrl!,
-        chain.id,
-        publicClient
-      )
-
-      burnSpinner.succeed('CANNOT_UNWRAP fuse burned')
-      logger.log(`  TX Hash: ${burnHash}`)
-      logger.newline()
     } else {
       logger.success('Parent domain has CANNOT_UNWRAP fuse burned')
       logger.newline()
