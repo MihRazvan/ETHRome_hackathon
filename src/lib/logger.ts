@@ -60,7 +60,7 @@ export class Logger {
     }
   }
 
-  header(message: string): void {
+  header(_message?: string): void {
     if (!this.quiet) {
       console.log()
       console.log(chalk.dim.green(AUTARK_LOGO))
