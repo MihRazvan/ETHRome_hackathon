@@ -15,6 +15,7 @@
     "test:complete": "tsx src/test/test-complete-versioning.ts",
     "check:domain": "tsx src/test/check-domain.ts",
     "burn-parent-fuses": "tsx src/test/burn-parent-fuses.ts",
+    "deploy:safe": "tsx src/test/deploy-with-safe.ts",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
