@@ -24,8 +24,8 @@ import { readFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { namehash, normalize } from 'ox/Ens'
-import { FUSES } from '../namewrapper/fuses.js'
-import { NAME_WRAPPER_ADDRESS } from '../namewrapper/wrapper.js'
+import { FUSES } from '../lib/ens/namewrapper/fuses.js'
+import { NAME_WRAPPER_ADDRESS } from '../lib/ens/namewrapper/wrapper.js'
 import * as readline from 'readline/promises'
 
 const __filename = fileURLToPath(import.meta.url)
