@@ -19,6 +19,8 @@
     "deploy:safe-sdk": "tsx src/test/deploy-with-safe-sdk.ts",
     "deploy:safe-direct": "tsx src/test/deploy-safe-direct.ts",
     "transfer-to-safe": "tsx src/test/transfer-to-safe.ts",
+    "set-contenthash": "tsx src/test/set-contenthash-via-safe.ts",
+    "set-contenthash-sdk": "tsx src/test/set-contenthash-sdk.ts",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
