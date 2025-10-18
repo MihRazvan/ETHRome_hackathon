@@ -30,6 +30,7 @@
     "@ipld/dag-cbor": "^9.2.4",
     "@storacha/blob-index": "^1.2.0",
     "@storacha/filecoin-client": "^1.0.11",
+    "@types/varint": "^6.0.3",
     "@ucanto/client": "^9.0.1",
     "@ucanto/core": "^10.4.0",
     "@ucanto/principal": "^9.0.2",
@@ -41,6 +42,7 @@
     "multiformats": "^13.4.0",
     "ox": "^0.8.7",
     "spektr": "^0.2.0",
+    "varint": "^6.0.0",
     "viem": "^2.21.54"
   },
   "devDependencies": {
