@@ -12,6 +12,9 @@
     "test": "node --test",
     "test:ipfs": "tsx src/test/test-ipfs-simple.ts",
     "test:ens": "tsx src/test/test-ens.ts",
+    "test:complete": "tsx src/test/test-complete-versioning.ts",
+    "check:domain": "tsx src/test/check-domain.ts",
+    "burn-parent-fuses": "tsx src/test/burn-parent-fuses.ts",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
