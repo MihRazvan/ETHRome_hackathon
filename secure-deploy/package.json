@@ -16,6 +16,9 @@
     "check:domain": "tsx src/test/check-domain.ts",
     "burn-parent-fuses": "tsx src/test/burn-parent-fuses.ts",
     "deploy:safe": "tsx src/test/deploy-with-safe.ts",
+    "deploy:safe-sdk": "tsx src/test/deploy-with-safe-sdk.ts",
+    "deploy:safe-direct": "tsx src/test/deploy-safe-direct.ts",
+    "transfer-to-safe": "tsx src/test/transfer-to-safe.ts",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -32,6 +35,7 @@
     "node": "^20.10.0 || >=21.1.0"
   },
   "dependencies": {
+    "@safe-global/sdk-starter-kit": "^3.0.1",
     "@storacha/client": "^1.8.2",
     "dotenv": "^17.2.3",
     "files-from-path": "^1.0.4",
