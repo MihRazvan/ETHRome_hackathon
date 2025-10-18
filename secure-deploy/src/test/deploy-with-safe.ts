@@ -17,7 +17,7 @@
 import { execSync } from 'child_process'
 import { existsSync, readFileSync } from 'fs'
 import { config } from 'dotenv'
-import { parseAbi, namehash, createPublicClient, createWalletClient, http, type Address, type Hex, parseEther } from 'viem'
+import { parseAbi, namehash, createPublicClient, createWalletClient, http, type Address, type Hex, parseEther, encodeFunctionData } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { sepolia } from 'viem/chains'
 import { normalize } from 'viem/ens'
@@ -190,7 +190,7 @@ async function main() {
   const txData: SafeTransactionData = {
     to: NAME_WRAPPER_ADDRESS[sepolia.id],
     value: 0n,
-    data: publicClient.encodeFunctionData({
+    data: encodeFunctionData({
       abi: nameWrapperAbi,
       functionName: 'setSubnodeRecord',
       args: [parentNode, versionLabel, safeAddress, SEPOLIA_PUBLIC_RESOLVER, 0n, IMMUTABLE_FUSES, expiry]
@@ -205,7 +205,7 @@ async function main() {
   ])
 
   const subdomainNode = namehash(normalize(fullDomain))
-  const setContentHashData = publicClient.encodeFunctionData({
+  const setContentHashData = encodeFunctionData({
     abi: resolverAbi,
     functionName: 'setContenthash',
     args: [subdomainNode, contentHash]

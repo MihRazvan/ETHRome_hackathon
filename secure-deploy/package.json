@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@storacha/client": "^1.8.2",
+    "dotenv": "^17.2.3",
     "files-from-path": "^1.0.4",
     "multiformats": "^13.4.0",
     "ox": "^0.8.7",

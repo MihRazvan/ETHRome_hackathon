@@ -41,6 +41,13 @@ export const prepareUpdateEnsArgs = ({
   }
 }
 
+export const encodeContentHash = (cid: string): `0x${string}` => {
+  const code = IPFS_CODEC
+  const bytes = CID.parse(cid).toV1().bytes
+  const codeBytes = Uint8Array.from(varint.encode(code))
+  return toHex(concatUint8Arrays(codeBytes, bytes)) as `0x${string}`
+}
+
 export const setContentHash = {
   name: 'setContenthash',
   type: 'function',
