@@ -10,22 +10,35 @@ export type LogLevel = 'info' | 'success' | 'warn' | 'error' | 'debug'
 
 // AUTARK ASCII art logo
 const AUTARK_LOGO = `
-┌─────────────────────────────────────────────────────────────────────┐
-│  █████╗ ██╗   ██╗████████╗ █████╗ ██████╗ ██╗  ██╗                │
-│ ██╔══██╗██║   ██║╚══██╔══╝██╔══██╗██╔══██╗██║ ██╔╝                │
-│ ███████║██║   ██║   ██║   ███████║██████╔╝█████╔╝                 │
-│ ██╔══██║██║   ██║   ██║   ██╔══██║██╔══██╗██╔═██╗                 │
-│ ██║  ██║╚██████╔╝   ██║   ██║  ██║██║  ██║██║  ██╗                │
-│ ╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝                │
-│                                                                     │
-│ Decentralized • Immutable • Trustless                              │
-│ v0.1.0                                                              │
-└─────────────────────────────────────────────────────────────────────┘
+          _____                    _____                _____                    _____                    _____                    _____
+         /\\    \\                  /\\    \\              /\\    \\                  /\\    \\                  /\\    \\                  /\\    \\
+        /::\\    \\                /::\\____\\            /::\\    \\                /::\\    \\                /::\\    \\                /::\\____\\
+       /::::\\    \\              /:::/    /            \\:::\\    \\              /::::\\    \\              /::::\\    \\              /:::/    /
+      /::::::\\    \\            /:::/    /              \\:::\\    \\            /::::::\\    \\            /::::::\\    \\            /:::/    /
+     /:::/\\:::\\    \\          /:::/    /                \\:::\\    \\          /:::/\\:::\\    \\          /:::/\\:::\\    \\          /:::/    /
+    /:::/__\\:::\\    \\        /:::/    /                  \\:::\\    \\        /:::/__\\:::\\    \\        /:::/__\\:::\\    \\        /:::/____/
+   /::::\\   \\:::\\    \\      /:::/    /                   /::::\\    \\      /::::\\   \\:::\\    \\      /::::\\   \\:::\\    \\      /::::\\    \\
+  /::::::\\   \\:::\\    \\    /:::/    /      _____        /::::::\\    \\    /::::::\\   \\:::\\    \\    /::::::\\   \\:::\\    \\    /::::::\\____\\________
+ /:::/\\:::\\   \\:::\\    \\  /:::/____/      /\\    \\      /:::/\\:::\\    \\  /:::/\\:::\\   \\:::\\    \\  /:::/\\:::\\   \\:::\\____\\  /:::/\\:::::::::::\\    \\
+/:::/  \\:::\\   \\:::\\____\\|:::|    /      /::\\____\\    /:::/  \\:::\\____\\/:::/  \\:::\\   \\:::\\____\\/:::/  \\:::\\   \\:::|    |/:::/  |:::::::::::\\____\\
+\\::/    \\:::\\  /:::/    /|:::|____\\     /:::/    /   /:::/    \\::/    /\\::/    \\:::\\  /:::/    /\\::/   |::::\\  /:::|____|\\::/   |::|~~~|~~~~~
+ \\/____/ \\:::\\/:::/    /  \\:::\\    \\   /:::/    /   /:::/    / \\/____/  \\/____/ \\:::\\/:::/    /  \\/____|::::::\\/:::/    /  \\/____|::|   |
+          \\::::::/    /    \\:::\\    \\ /:::/    /   /:::/    /                    \\::::::/    /         |:::::::::/    /         |::|   |
+           \\::::/    /      \\:::\\    /:::/    /   /:::/    /                      \\::::/    /          |::|\\::::/    /          |::|   |
+           /:::/    /        \\:::\\__/:::/    /    \\::/    /                       /:::/    /           |::| \\::/____/           |::|   |
+          /:::/    /          \\::::::::/    /      \\/____/                       /:::/    /            |::|  ~|                 |::|   |
+         /:::/    /            \\::::::/    /                                    /:::/    /             |::|   |                 |::|   |
+        /:::/    /              \\::::/    /                                    /:::/    /              \\::|   |                 \\::|   |
+        \\::/    /                \\::/____/                                     \\::/    /                \\:|   |                  \\:|   |
+         \\/____/                  ~~                                            \\/____/                  \\|___|                   \\|___|
+
+Decentralized • Immutable • Trustless                                                                         v0.1.0
 `
 
 export class Logger {
   private quiet: boolean
   private debug: boolean
+  private autarkColor = chalk.hex('#4AE2ED') // Autark brand color
 
   constructor(options: { quiet?: boolean; debug?: boolean } = {}) {
     this.quiet = options.quiet || false
@@ -34,13 +47,13 @@ export class Logger {
 
   info(message: string): void {
     if (!this.quiet) {
-      console.log(chalk.dim.cyan('[i]'), message)
+      console.log(this.autarkColor('[i]'), message)
     }
   }
 
   success(message: string): void {
     if (!this.quiet) {
-      console.log(chalk.green('[+]'), message)
+      console.log(this.autarkColor('[+]'), message)
     }
   }
 
@@ -63,7 +76,7 @@ export class Logger {
   header(_message?: string): void {
     if (!this.quiet) {
       console.log()
-      console.log(chalk.dim.green(AUTARK_LOGO))
+      console.log(this.autarkColor(AUTARK_LOGO))
     }
   }
 
@@ -74,7 +87,7 @@ export class Logger {
       const titleLen = title.length
       const rightPadding = width - titleLen - 4 // 4 = "├─ " + " "
       const line = '─'.repeat(Math.max(0, rightPadding))
-      console.log(chalk.dim.white(`├─ ${title} ${line}┤`))
+      console.log(this.autarkColor(`├─ ${title} ${line}┤`))
     }
   }
 
@@ -85,9 +98,9 @@ export class Logger {
       const padding = Math.floor((width - message.length - 2) / 2)
       const leftPad = ' '.repeat(padding)
       const rightPad = ' '.repeat(width - message.length - 2 - padding)
-      console.log(chalk.green('╔' + '═'.repeat(width - 2) + '╗'))
-      console.log(chalk.green('║') + leftPad + chalk.bold.green(message) + rightPad + chalk.green('║'))
-      console.log(chalk.green('╚' + '═'.repeat(width - 2) + '╝'))
+      console.log(this.autarkColor('╔' + '═'.repeat(width - 2) + '╗'))
+      console.log(this.autarkColor('║') + leftPad + this.autarkColor.bold(message) + rightPad + this.autarkColor('║'))
+      console.log(this.autarkColor('╚' + '═'.repeat(width - 2) + '╝'))
     }
   }
 
@@ -111,7 +124,7 @@ export class Logger {
         interval: 80,
         frames: ['[>  ]', '[ > ]', '[  >]', '[ < ]'],
       },
-      color: 'green',
+      color: 'cyan',
     })
   }
 
