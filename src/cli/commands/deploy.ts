@@ -2,19 +2,20 @@
  * Deploy command - Main deployment workflow
  */
 
-import { createPublicClient, http } from 'viem'
+import { createPublicClient, http, type Address } from 'viem'
 import { sepolia, mainnet } from 'viem/chains'
 import { Logger } from '../../lib/logger.js'
 import { loadConfig, validateDeployConfig, type Config } from '../../lib/config.js'
 import { uploadToIPFS, getIPFSUrls } from '../../lib/ipfs/upload.js'
 import { calculateBuildHash, formatHash, formatSize } from '../../lib/hash/build.js'
 import { getFullCommitInfo, isWorkingDirectoryClean } from '../../lib/git/commit.js'
-import { detectNextVersion, buildFullDomain } from '../../lib/ens/version.js'
+import { detectNextVersion, buildFullDomain, getSubdomainInfo } from '../../lib/ens/version.js'
 import { createDeploymentPlan } from '../../lib/ens/deploy.js'
 import { createSubdomainDirect } from '../../lib/ens/execute.js'
 import { checkParentFuses, burnParentFuses } from '../../lib/ens/fuses-check.js'
 import { initSafeClient, sendSafeTransaction, getSafeTransactionUrl } from '../../lib/safe/client.js'
 import { generateSafeDescription } from '../../lib/safe/metadata.js'
+import { encodeSafeBatchDeploy, submitToSafeService, getSafeServiceUrl } from '../../lib/ens/safe-batch-deploy.js'
 import { DeployError, GitError } from '../../lib/errors.js'
 import * as readline from 'readline/promises'
 
@@ -22,6 +23,7 @@ export interface DeployOptions extends Partial<Config> {
   directory: string
   skipGitCheck?: boolean
   dryRun?: boolean
+  safeOwnsParent?: boolean
 }
 
 /**
@@ -170,8 +172,29 @@ export async function deployCommand(options: DeployOptions): Promise<void> {
       return
     }
 
-    // Step 7: Check parent fuses
-    logger.section('🔍 Step 7: Check Parent Domain')
+    // Step 7: Detect deployment mode (Safe-owns-parent or personal-owns-parent)
+    logger.section('🔍 Step 7: Detect Deployment Mode')
+    const parentInfo = await getSubdomainInfo(config.ensDomain!, publicClient, chain.id)
+
+    let safeOwnsParent = options.safeOwnsParent
+    if (safeOwnsParent === undefined) {
+      // Auto-detect: does Safe own the parent domain?
+      safeOwnsParent = parentInfo.owner?.toLowerCase() === config.safeAddress?.toLowerCase()
+    }
+
+    if (safeOwnsParent) {
+      logger.success('Mode: Safe-owns-parent (batched deployment)')
+      logger.log('  Parent owner: Safe')
+      logger.log('  Both transactions will be batched together')
+    } else {
+      logger.success('Mode: Personal-owns-parent (two-step deployment)')
+      logger.log('  Parent owner: Personal wallet')
+      logger.log('  Subdomain creation first, then Safe sets contenthash')
+    }
+    logger.newline()
+
+    // Step 8: Check parent fuses
+    logger.section('🔍 Step 8: Check Parent Fuses')
     const fuseCheck = await checkParentFuses(config.ensDomain!, publicClient, chain.id)
 
     if (fuseCheck.needsBurn) {
@@ -219,64 +242,135 @@ export async function deployCommand(options: DeployOptions): Promise<void> {
       logger.newline()
     }
 
-    // Step 8: Execute deployment
-    logger.section('✅ Step 8: Execute Deployment')
+    // Step 9: Execute deployment
+    logger.section('✅ Step 9: Execute Deployment')
 
-    // Transaction 1: Create subdomain (direct execution by parent owner)
-    const spinner1 = logger.spinner('Creating subdomain (parent owner)...')
-    spinner1.start()
-    const subdomainHash = await createSubdomainDirect(
-      plan,
-      config.ownerPrivateKey!,
-      config.rpcUrl!,
-      chain.id,
-      publicClient
-    )
-    spinner1.succeed(`Subdomain created: ${fullDomain}`)
-    logger.log(`  TX Hash: ${subdomainHash}`)
-    logger.newline()
+    if (safeOwnsParent) {
+      // SAFE-OWNS-PARENT MODE: Batched deployment
+      logger.log('Batching createSubdomain + setContenthash into single Safe transaction...')
+      logger.newline()
 
-    // Transaction 2: Set contenthash (via Safe)
-    logger.log('Next step: Set contenthash via Safe')
-    const spinner2 = logger.spinner('Proposing contenthash to Safe...')
-    spinner2.start()
-    const result2 = await sendSafeTransaction(safeClient, plan.setContenthashTx, chain.id)
-    spinner2.succeed(`Contenthash proposal created`)
-    if (result2.safeTxHash) {
-      logger.log(`  Safe TX Hash: ${result2.safeTxHash}`)
+      const batchResult = await encodeSafeBatchDeploy(
+        {
+          parentDomain: config.ensDomain!,
+          subdomain: version.toString(),
+          safeAddress: config.safeAddress! as Address,
+          cid: ipfsResult.cid,
+          chainId: chain.id,
+          expiryTimestamp: Math.floor(Date.now() / 1000) + (365 * 24 * 60 * 60), // 1 year
+        },
+        logger
+      )
+      logger.newline()
+
+      const spinner = logger.spinner('Submitting batch to Safe Transaction Service...')
+      spinner.start()
+
+      const safeTxHash = await submitToSafeService(
+        config.safeAddress! as Address,
+        chain.id,
+        batchResult,
+        config.ownerPrivateKey!,
+        logger
+      )
+
+      spinner.succeed('Batch transaction submitted to Safe')
+      logger.log(`  Safe TX Hash: ${safeTxHash}`)
+      logger.newline()
+
+      // Success!
+      logger.header('🎉 Deployment Proposal Created!')
+      logger.newline()
+      logger.success(`Domain: ${fullDomain}`)
+      logger.log(`  IPFS CID: ${ipfsResult.cid}`)
+      if (commitInfo) {
+        logger.log(`  Git Commit: ${commitInfo.shortHash}`)
+      }
+      logger.log(`  Build Hash: ${formatHash(buildHash.hash)}...`)
+      logger.newline()
+
+      logger.warn('⚠️  Action Required: Approve & Execute')
+      logger.log('  1. Go to Safe UI: ' + getSafeServiceUrl(config.safeAddress! as Address, safeTxHash, chain.id))
+      logger.log('  2. Review the batched transaction:')
+      logger.log('     • Create subdomain: ' + fullDomain)
+      logger.log('     • Set contenthash: ' + ipfsResult.cid)
+      logger.log('  3. Approve and execute (requires threshold signatures)')
+      logger.newline()
+
+      logger.log('After execution, your site will be accessible at:')
+      const urls = getIPFSUrls(ipfsResult.cid, fullDomain)
+      logger.log(`  ${urls[0]} ✅ (works immediately)`)
+      for (let i = 1; i < urls.length; i++) {
+        logger.log(`  ${urls[i]}`)
+      }
+      logger.newline()
+
+      logger.warn('⚠️  ENS Gateway Propagation')
+      logger.log('  ENS gateways (*.eth.limo, *.eth.link) may take 5-15 minutes')
+      logger.log('  to propagate after execution. Use IPFS gateway while waiting.')
+      logger.newline()
+
+    } else {
+      // PERSONAL-OWNS-PARENT MODE: Two-step deployment
+      logger.log('Two-step deployment: Subdomain creation, then Safe sets contenthash')
+      logger.newline()
+
+      // Transaction 1: Create subdomain (direct execution by parent owner)
+      const spinner1 = logger.spinner('Creating subdomain (parent owner)...')
+      spinner1.start()
+      const subdomainHash = await createSubdomainDirect(
+        plan,
+        config.ownerPrivateKey!,
+        config.rpcUrl!,
+        chain.id,
+        publicClient
+      )
+      spinner1.succeed(`Subdomain created: ${fullDomain}`)
+      logger.log(`  TX Hash: ${subdomainHash}`)
+      logger.newline()
+
+      // Transaction 2: Set contenthash (via Safe)
+      logger.log('Next step: Set contenthash via Safe')
+      const spinner2 = logger.spinner('Proposing contenthash to Safe...')
+      spinner2.start()
+      const result2 = await sendSafeTransaction(safeClient, plan.setContenthashTx, chain.id)
+      spinner2.succeed(`Contenthash proposal created`)
+      if (result2.safeTxHash) {
+        logger.log(`  Safe TX Hash: ${result2.safeTxHash}`)
+      }
+      logger.newline()
+
+      // Success!
+      logger.header('🎉 Subdomain Created!')
+      logger.newline()
+      logger.success(`Subdomain: ${fullDomain}`)
+      logger.log(`  Owner: ${config.safeAddress} (Safe)`)
+      logger.log(`  IPFS CID: ${ipfsResult.cid}`)
+      if (commitInfo) {
+        logger.log(`  Git Commit: ${commitInfo.shortHash}`)
+      }
+      logger.log(`  Build Hash: ${formatHash(buildHash.hash)}...`)
+      logger.newline()
+
+      logger.warn('⚠️  Action Required: Set Contenthash')
+      logger.log('  1. Go to Safe UI: ' + getSafeTransactionUrl(config.safeAddress!, chain.id))
+      logger.log('  2. Review and approve contenthash transaction')
+      logger.log('  3. Execute transaction')
+      logger.newline()
+
+      logger.log('Your site will be accessible at:')
+      const urls = getIPFSUrls(ipfsResult.cid, fullDomain)
+      logger.log(`  ${urls[0]} ✅ (works immediately)`)
+      for (let i = 1; i < urls.length; i++) {
+        logger.log(`  ${urls[i]}`)
+      }
+      logger.newline()
+
+      logger.warn('⚠️  ENS Gateway Propagation')
+      logger.log('  ENS gateways (*.eth.limo, *.eth.link) may take 5-15 minutes')
+      logger.log('  to propagate. Use the IPFS gateway while waiting.')
+      logger.newline()
     }
-    logger.newline()
-
-    // Success!
-    logger.header('🎉 Subdomain Created!')
-    logger.newline()
-    logger.success(`Subdomain: ${fullDomain}`)
-    logger.log(`  Owner: ${config.safeAddress} (Safe)`)
-    logger.log(`  IPFS CID: ${ipfsResult.cid}`)
-    if (commitInfo) {
-      logger.log(`  Git Commit: ${commitInfo.shortHash}`)
-    }
-    logger.log(`  Build Hash: ${formatHash(buildHash.hash)}...`)
-    logger.newline()
-
-    logger.warn('⚠️  Action Required: Set Contenthash')
-    logger.log('  1. Go to Safe UI: ' + getSafeTransactionUrl(config.safeAddress!, chain.id))
-    logger.log('  2. Review and approve contenthash transaction')
-    logger.log('  3. Execute transaction')
-    logger.newline()
-
-    logger.log('Your site will be accessible at:')
-    const urls = getIPFSUrls(ipfsResult.cid, fullDomain)
-    logger.log(`  ${urls[0]} ✅ (works immediately)`)
-    for (let i = 1; i < urls.length; i++) {
-      logger.log(`  ${urls[i]}`)
-    }
-    logger.newline()
-
-    logger.warn('⚠️  ENS Gateway Propagation')
-    logger.log('  ENS gateways (*.eth.limo, *.eth.link) may take 5-15 minutes')
-    logger.log('  to propagate. Use the IPFS gateway while waiting.')
-    logger.newline()
 
   } catch (error: any) {
     logger.error('Deployment failed')

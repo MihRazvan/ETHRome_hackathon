@@ -87,7 +87,7 @@ function decodeIPFSContenthash(contenthash: Hex): string {
   const bytes = Buffer.from(hex, 'hex')
 
   // Decode varint codec (should be 0xe3 for IPFS)
-  const codec = varint.decode(bytes)
+  varint.decode(bytes)
   const codecLength = varint.decode.bytes || 0
 
   // Rest is the CID bytes
