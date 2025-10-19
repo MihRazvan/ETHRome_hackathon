@@ -26,7 +26,7 @@ const packageJson = JSON.parse(
 const program = new Command()
 
 program
-  .name('secure-deploy')
+  .name('autark')
   .description('Deploy frontends with Safe multisig + immutable ENS versioning')
   .version(packageJson.version)
 

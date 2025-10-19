@@ -2,10 +2,9 @@
  * Direct ENS execution (for parent owner)
  */
 
-import { createWalletClient, http, type Address, type Hex, type PublicClient } from 'viem'
+import { createWalletClient, http, type Hex, type PublicClient } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { sepolia, mainnet } from 'viem/chains'
-import { NAME_WRAPPER_ADDRESS } from './namewrapper/wrapper.js'
 import { ENSError } from '../errors.js'
 import type { DeploymentPlan } from './deploy.js'
 

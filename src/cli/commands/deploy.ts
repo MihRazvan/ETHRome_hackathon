@@ -358,7 +358,7 @@ export async function deployCommand(options: DeployOptions): Promise<void> {
       logger.log('Next step: Set contenthash via Safe')
       const spinner2 = logger.spinner('Proposing contenthash to Safe...')
       spinner2.start()
-      const result2 = await sendSafeTransaction(safeClient, plan.setContenthashTx, chain.id)
+      const result2 = await sendSafeTransaction(safeClient, plan.setContenthashTx)
       spinner2.succeed(`Contenthash proposal created`)
       if (result2.safeTxHash) {
         logger.log(`  Safe TX Hash: ${result2.safeTxHash}`)

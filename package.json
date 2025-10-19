@@ -1,13 +1,13 @@
 {
-  "name": "secure-deploy",
+  "name": "autark",
   "version": "0.1.0",
-  "description": "Secure frontend deployment system with immutable ENS versioning and Safe multisig",
+  "description": "Decentralized frontend deployment with Safe multisig governance and immutable ENS versioning",
   "type": "module",
   "bin": {
-    "secure-deploy": "./dist/cli/index.js"
+    "autark": "./dist/cli/index.js"
   },
   "scripts": {
-    "build": "tsc && chmod +x ./dist/cli/index.js",
+    "build": "rm -rf dist && tsc && chmod +x ./dist/cli/index.js",
     "dev": "tsx src/cli/index.ts",
     "cli": "tsx src/cli/index.ts",
     "test": "node --test",
@@ -27,13 +27,35 @@
   "keywords": [
     "ipfs",
     "ens",
+    "ethereum",
     "safe",
+    "gnosis-safe",
     "deployment",
-    "security",
-    "cli"
+    "decentralized",
+    "web3",
+    "frontend",
+    "immutable",
+    "versioning",
+    "multisig",
+    "cli",
+    "autark"
   ],
   "author": "ETHRome Hackathon Team",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MihRazvan/ETHRome_hackathon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MihRazvan/ETHRome_hackathon/issues"
+  },
+  "homepage": "https://github.com/MihRazvan/ETHRome_hackathon#readme",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "docs"
+  ],
   "engines": {
     "node": "^20.10.0 || >=21.1.0"
   },

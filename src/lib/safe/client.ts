@@ -56,8 +56,7 @@ export async function initSafeClient(config: SafeClientConfig) {
  */
 export async function sendSafeTransaction(
   client: any,
-  transaction: SafeTransaction,
-  chainId: number = 11155111
+  transaction: SafeTransaction
 ): Promise<SafeTransactionResult> {
   try {
     // Use send() which handles both immediate execution (threshold=1)

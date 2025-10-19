@@ -1,38 +1,65 @@
-# Secure Deploy
+# AUTARK
 
-> Secure frontend deployment with Safe multisig + immutable ENS versioning
+```
+          _____                    _____                _____                    _____                    _____                    _____
+         /\    \                  /\    \              /\    \                  /\    \                  /\    \                  /\    \
+        /::\    \                /::\____\            /::\    \                /::\    \                /::\    \                /::\____\
+       /::::\    \              /:::/    /            \:::\    \              /::::\    \              /::::\    \              /:::/    /
+      /::::::\    \            /:::/    /              \:::\    \            /::::::\    \            /::::::\    \            /:::/    /
+     /:::/\:::\    \          /:::/    /                \:::\    \          /:::/\:::\    \          /:::/\:::\    \          /:::/    /
+    /:::/__\:::\    \        /:::/    /                  \:::\    \        /:::/__\:::\    \        /:::/__\:::\    \        /:::/____/
+   /::::\   \:::\    \      /:::/    /                   /::::\    \      /::::\   \:::\    \      /::::\   \:::\    \      /::::\    \
+  /::::::\   \:::\    \    /:::/    /      _____        /::::::\    \    /::::::\   \:::\    \    /::::::\   \:::\    \    /::::::\____\________
+ /:::/\:::\   \:::\    \  /:::/____/      /\    \      /:::/\:::\    \  /:::/\:::\   \:::\    \  /:::/\:::\   \:::\____\  /:::/\:::::::::::\    \
+/:::/  \:::\   \:::\____\|:::|    /      /::\____\    /:::/  \:::\____\/:::/  \:::\   \:::\____\/:::/  \:::\   \:::|    |/:::/  |:::::::::::\____\
+\::/    \:::\  /:::/    /|:::|____\     /:::/    /   /:::/    \::/    /\::/    \:::\  /:::/    /\::/   |::::\  /:::|____|\::/   |::|~~~|~~~~~
+ \/____/ \:::\\/:::/    /  \:::\    \   /:::/    /   /:::/    / \/____/  \/____/ \:::\\/:::/    /  \/____|::::::\\/:::/    /  \/____|::|   |
+          \::::::/    /    \:::\    \ /:::/    /   /:::/    /                    \::::::/    /         |:::::::::/    /         |::|   |
+           \::::/    /      \:::\    /:::/    /   /:::/    /                      \::::/    /          |::|\\::::/    /          |::|   |
+           /:::/    /        \:::\\__/:::/    /    \::/    /                       /:::/    /           |::| \\::/____/           |::|   |
+          /:::/    /          \::::::::/    /      \/____/                       /:::/    /            |::|  ~|                 |::|   |
+         /:::/    /            \::::::/    /                                    /:::/    /             |::|   |                 |::|   |
+        /:::/    /              \::::/    /                                    /:::/    /              \::|   |                 \::|   |
+        \::/    /                \::/____/                                     \::/    /                \:|   |                  \:|   |
+         \/____/                  ~~                                            \/____/                  \|___|                   \|___|
 
-Deploy your frontend applications with confidence using:
-- **Safe multisig approvals** for human verification
-- **Immutable ENS versioning** using NameWrapper fuses
-- **IPFS deployment** via Storacha for decentralized hosting
-- **Git commit tracking** for full transparency
+Decentralized • Immutable • Trustless                                                                         v0.1.0
+```
 
-Built for ETHRome 2024 Hackathon.
+**Decentralized frontend deployment with Safe multisig governance and immutable ENS versioning**
+
+Autark enables trustless, censorship-resistant deployment of frontend applications through:
+
+- **IPFS Storage** - Content-addressed, permanent storage via Storacha
+- **ENS Versioning** - Immutable subdomain versions (v0, v1, v2...)
+- **Safe Multisig** - Governance and approval workflows
+- **Automated Deployments** - Git hooks and CI/CD integration
 
 ## Features
 
-- 🔐 **Safe Multisig Integration** - All deployments require Safe approval
-- 🛡️ **Immutable ENS Fuses** - Subdomains can't be unwrapped or modified
-- 📦 **IPFS via Storacha** - Decentralized, content-addressed hosting
-- 🔖 **Git Integration** - Track commit hash, author, and message
-- 🔐 **Build Hash** - Verify build integrity with SHA-256 hash
-- 📊 **Version Management** - Automatic versioning (v0, v1, v2...)
-- 🎯 **CLI Tool** - Simple, powerful command-line interface
+- **Immutable Deployments** - Each deployment creates a new versioned subdomain with burned ENS fuses
+- **Multisig Governance** - Integration with Safe multisig for team review and approval
+- **Automated Workflows** - Git hooks and GitHub Actions for streamlined deployments
+- **Two Deployment Modes** - Safe-owns-parent (batched) or Personal-owns-parent (two-step)
+- **Version History** - All deployments versioned and accessible forever
+- **Cypherpunk CLI** - ASCII art interface with Autark branding
+
+Built at ETHRome Hackathon 2024.
 
 ## Quick Start
 
 ### Installation
 
 ```bash
-npm install -g secure-deploy
+npm install -g autark
 ```
 
 Or use locally:
 
 ```bash
 npm install
-npm run cli -- --help
+npm run build
+npm link
 ```
 
 ### Prerequisites
@@ -40,7 +67,7 @@ npm run cli -- --help
 1. **Storacha CLI** - For IPFS uploads
    ```bash
    npm install -g @storacha/client
-   storacha login <your-email>
+   storacha login
    ```
 
 2. **Safe Multisig** - Create at [app.safe.global](https://app.safe.global)
@@ -51,104 +78,109 @@ npm run cli -- --help
 
 ### Configuration
 
-Create a config file:
+Initialize configuration:
 
 ```bash
-secure-deploy init
+autark init
 ```
 
-Edit `secure-deploy.config.yaml`:
+This creates `.autarkrc.json`:
 
-```yaml
-network: sepolia
-rpcUrl: https://ethereum-sepolia-rpc.publicnode.com
-
-ensDomain: your-domain.eth
-safeAddress: 0x...
-safeApiKey: your-safe-api-key
-
-ownerPrivateKey: 0x...  # For Safe signing
+```json
+{
+  "ensDomain": "yourdomain.eth",
+  "safeAddress": "0x...",
+  "network": "sepolia",
+  "rpcUrl": "https://sepolia.infura.io/v3/YOUR_KEY"
+}
 ```
 
-Or use environment variables (see `.env.example`).
+Or use environment variables (create `.env`):
+
+```bash
+SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_KEY
+SAFE_ADDRESS=0x...
+ENS_DOMAIN=yourdomain.eth
+OWNER_PRIVATE_KEY=0x...
+SAFE_API_KEY=your_safe_api_key
+```
+
+### Setup Git Hooks (Optional)
+
+```bash
+autark setup
+```
+
+This installs a pre-push hook for automatic deployments.
 
 ### Deploy
 
 ```bash
-secure-deploy deploy ./dist
+autark deploy ./dist
 ```
 
 This will:
-1. Calculate build hash
-2. Get Git commit info
-3. Upload to IPFS via Storacha
-4. Detect next version (e.g., v2)
-5. Create Safe transaction to deploy v2.your-domain.eth
-6. Set contenthash to IPFS CID
+1. Upload to IPFS via Storacha
+2. Detect next version (e.g., v2)
+3. Create Safe transaction to deploy v2.your-domain.eth
+4. Set contenthash to IPFS CID
 
 ### Check Status
 
 ```bash
 # View all deployed versions
-secure-deploy status
+autark status
 
 # Check specific subdomain
-secure-deploy status --subdomain v1.ethrome.eth
+autark status --subdomain v1.yourdomain.eth
 ```
 
 ## CLI Commands
 
-### `deploy <directory>`
+### `autark deploy <directory>`
 
 Deploy a directory to IPFS and ENS via Safe.
 
-```bash
-secure-deploy deploy ./dist [options]
-
-Options:
-  --ens-domain <domain>          ENS parent domain
-  --safe-address <address>       Safe multisig address
-  --owner-private-key <key>      Owner private key for Safe signing
-  --rpc-url <url>                RPC URL
-  --safe-api-key <key>           Safe API key
-  --network <network>            Network (mainnet, sepolia, goerli)
-  --skip-git-check               Skip git working directory check
-  --dry-run                      Preview deployment without executing
-  --quiet                        Minimal output
-  --debug                        Debug output
-```
+**Options:**
+- `--ens-domain <domain>` - ENS parent domain
+- `--safe-address <address>` - Safe multisig address
+- `--owner-private-key <key>` - Private key for Safe signing
+- `--rpc-url <url>` - Ethereum RPC URL
+- `--safe-api-key <key>` - Safe API key
+- `--network <network>` - Network (mainnet, sepolia, goerli)
+- `--skip-git-check` - Skip git working directory check
+- `--dry-run` - Preview deployment without executing
+- `--quiet` - Minimal output
+- `--debug` - Debug output
 
 **Example:**
 
 ```bash
-secure-deploy deploy ./dist \\
-  --ens-domain ethrome.eth \\
-  --safe-address 0x82fFc43E48dA420bC4F3DeddB49f0b27d4424C3f \\
-  --safe-api-key your-key \\
-  --dry-run
+autark deploy ./dist \
+  --ens-domain yourdomain.eth \
+  --safe-address 0x... \
+  --safe-api-key your-key
 ```
 
-### `status`
+### `autark status`
 
 Check deployment status and view deployed versions.
 
-```bash
-secure-deploy status [options]
-
-Options:
-  --subdomain <subdomain>  Check specific subdomain
-  --ens-domain <domain>    ENS parent domain
-  --rpc-url <url>          RPC URL
-  --network <network>      Network (mainnet, sepolia, goerli)
-```
+**Options:**
+- `--subdomain <subdomain>` - Check specific subdomain
+- `--ens-domain <domain>` - ENS parent domain
+- `--rpc-url <url>` - Ethereum RPC URL
+- `--network <network>` - Network (mainnet, sepolia, goerli)
+- `--quiet` - Minimal output
+- `--debug` - Debug output
 
 **Example:**
 
 ```bash
-secure-deploy status --ens-domain ethrome.eth
+autark status --ens-domain yourdomain.eth
 ```
 
-### `init`
+### `autark init`
 
 Initialize configuration file.
 
