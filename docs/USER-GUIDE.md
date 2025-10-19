@@ -38,9 +38,9 @@ Before starting, ensure you have:
 For testing on Sepolia:
 
 1. Go to a Sepolia faucet:
-   - https://sepoliafaucet.com
-   - https://www.alchemy.com/faucets/ethereum-sepolia
-   - https://faucet.quicknode.com/ethereum/sepolia
+   - [https://sepoliafaucet.com](https://sepoliafaucet.com)
+   - [https://www.alchemy.com/faucets/ethereum-sepolia](https://www.alchemy.com/faucets/ethereum-sepolia)
+   - [https://faucet.quicknode.com/ethereum/sepolia](https://faucet.quicknode.com/ethereum/sepolia)
 
 2. Enter your wallet address
 
@@ -111,17 +111,28 @@ autark --help
 
 **Output:**
 ```
-          _____                    _____                _____
-         /\    \                  /\    \              /\    \
-        /::\    \                /::\____\            /::\    \
-       /::::\    \              /:::/    /            \:::\    \
-      /::::::\    \            /:::/    /              \:::\    \
-     /:::/\:::\    \          /:::/    /                \:::\    \
-    /:::/__\:::\    \        /:::/    /                  \:::\    \
-   /::::\   \:::\    \      /:::/    /                   /::::\    \
-  /::::::\   \:::\    \    /:::/    /      _____        /::::::\    \
- /:::/\:::\   \:::\    \  /:::/____/      /\    \      /:::/\:::\    \
-/:::/  \:::\   \:::\____\|:::|    /      /::\____\    /:::/  \:::\____\
+          _____                    _____                _____                    _____                    _____                    _____          
+         /\    \                  /\    \              /\    \                  /\    \                  /\    \                  /\    \         
+        /::\    \                /::\____\            /::\    \                /::\    \                /::\    \                /::\____\        
+       /::::\    \              /:::/    /            \:::\    \              /::::\    \              /::::\    \              /:::/    /        
+      /::::::\    \            /:::/    /              \:::\    \            /::::::\    \            /::::::\    \            /:::/    /         
+     /:::/\:::\    \          /:::/    /                \:::\    \          /:::/\:::\    \          /:::/\:::\    \          /:::/    /          
+    /:::/__\:::\    \        /:::/    /                  \:::\    \        /:::/__\:::\    \        /:::/__\:::\    \        /:::/____/           
+   /::::\   \:::\    \      /:::/    /                   /::::\    \      /::::\   \:::\    \      /::::\   \:::\    \      /::::\    \           
+  /::::::\   \:::\    \    /:::/    /      _____        /::::::\    \    /::::::\   \:::\    \    /::::::\   \:::\    \    /::::::\____\________  
+ /:::/\:::\   \:::\    \  /:::/____/      /\    \      /:::/\:::\    \  /:::/\:::\   \:::\    \  /:::/\:::\   \:::\____\  /:::/\:::::::::::\    \ 
+/:::/  \:::\   \:::\____\|:::|    /      /::\____\    /:::/  \:::\____\/:::/  \:::\   \:::\____\/:::/  \:::\   \:::|    |/:::/  |:::::::::::\____\
+\::/    \:::\  /:::/    /|:::|____\     /:::/    /   /:::/    \::/    /\::/    \:::\  /:::/    /\::/   |::::\  /:::|____|\::/   |::|~~~|~~~~~     
+ \/____/ \:::\/:::/    /  \:::\    \   /:::/    /   /:::/    / \/____/  \/____/ \:::\/:::/    /  \/____|:::::\/:::/    /  \/____|::|   |          
+          \::::::/    /    \:::\    \ /:::/    /   /:::/    /                    \::::::/    /         |:::::::::/    /         |::|   |          
+           \::::/    /      \:::\    /:::/    /   /:::/    /                      \::::/    /          |::|\::::/    /          |::|   |          
+           /:::/    /        \:::\__/:::/    /    \::/    /                       /:::/    /           |::| \::/____/           |::|   |          
+          /:::/    /          \::::::::/    /      \/____/                       /:::/    /            |::|  ~|                 |::|   |          
+         /:::/    /            \::::::/    /                                    /:::/    /             |::|   |                 |::|   |          
+        /:::/    /              \::::/    /                                    /:::/    /              \::|   |                 \::|   |          
+        \::/    /                \::/____/                                     \::/    /                \:|   |                  \:|   |          
+         \/____/                  ~~                                            \/____/                  \|___|                   \|___|          
+                                                                                                                                                  
 
 Decentralized • Immutable • Trustless                          v0.1.0
 
@@ -318,7 +329,7 @@ open https://app.safe.global
    Owner 3: 0x9abc... (Team member)
    ```
 
-2. Set threshold: 2 of 3
+2. Set threshold e.g.: 2 of 3
    - Requires 2 signatures to execute
    - Prevents single person from deploying malicious updates
 
@@ -338,7 +349,7 @@ open https://app.safe.global
 
 **Result:**
 - Safe created!
-- Safe address: `0xA5ED8dd265c8e9154FaBf8E66Cb3aF16002261A3`
+- Safe address: `0xA5E...61A3`
 - **Copy this address** - you'll need it
 
 ### Step 6: Fund Safe (Optional)
@@ -356,7 +367,7 @@ If Safe will execute transactions (not just propose):
 
 ### Step 7: Get Safe API Key
 
-1. Go to https://developer.safe.global
+1. Go to [https://developer.safe.global](https://developer.safe.global)
 2. Click "Sign Up" or "Log In"
 3. Create new API key:
    - Name: "MyProject Deployments"
@@ -389,7 +400,7 @@ autark init
 
 ```
 ? ENS parent domain: myproject.eth
-? Safe address: 0xA5ED8dd265c8e9154FaBf8E66Cb3aF16002261A3
+? Safe address: 0xA5E...61A3
 ? Network (mainnet/sepolia): sepolia
 ? RPC URL: https://sepolia.infura.io/v3/YOUR_KEY
 ```
@@ -550,11 +561,28 @@ autark deploy dist
 
 **Output:**
 ```
-          _____                    _____                _____
-         /\    \                  /\    \              /\    \
-        /::\    \                /::\____\            /::\    \
-
-Decentralized • Immutable • Trustless                          v0.1.0
+          _____                    _____                _____                    _____                    _____                    _____          
+         /\    \                  /\    \              /\    \                  /\    \                  /\    \                  /\    \         
+        /::\    \                /::\____\            /::\    \                /::\    \                /::\    \                /::\____\        
+       /::::\    \              /:::/    /            \:::\    \              /::::\    \              /::::\    \              /:::/    /        
+      /::::::\    \            /:::/    /              \:::\    \            /::::::\    \            /::::::\    \            /:::/    /         
+     /:::/\:::\    \          /:::/    /                \:::\    \          /:::/\:::\    \          /:::/\:::\    \          /:::/    /          
+    /:::/__\:::\    \        /:::/    /                  \:::\    \        /:::/__\:::\    \        /:::/__\:::\    \        /:::/____/           
+   /::::\   \:::\    \      /:::/    /                   /::::\    \      /::::\   \:::\    \      /::::\   \:::\    \      /::::\    \           
+  /::::::\   \:::\    \    /:::/    /      _____        /::::::\    \    /::::::\   \:::\    \    /::::::\   \:::\    \    /::::::\____\________  
+ /:::/\:::\   \:::\    \  /:::/____/      /\    \      /:::/\:::\    \  /:::/\:::\   \:::\    \  /:::/\:::\   \:::\____\  /:::/\:::::::::::\    \ 
+/:::/  \:::\   \:::\____\|:::|    /      /::\____\    /:::/  \:::\____\/:::/  \:::\   \:::\____\/:::/  \:::\   \:::|    |/:::/  |:::::::::::\____\
+\::/    \:::\  /:::/    /|:::|____\     /:::/    /   /:::/    \::/    /\::/    \:::\  /:::/    /\::/   |::::\  /:::|____|\::/   |::|~~~|~~~~~     
+ \/____/ \:::\/:::/    /  \:::\    \   /:::/    /   /:::/    / \/____/  \/____/ \:::\/:::/    /  \/____|:::::\/:::/    /  \/____|::|   |          
+          \::::::/    /    \:::\    \ /:::/    /   /:::/    /                    \::::::/    /         |:::::::::/    /         |::|   |          
+           \::::/    /      \:::\    /:::/    /   /:::/    /                      \::::/    /          |::|\::::/    /          |::|   |          
+           /:::/    /        \:::\__/:::/    /    \::/    /                       /:::/    /           |::| \::/____/           |::|   |          
+          /:::/    /          \::::::::/    /      \/____/                       /:::/    /            |::|  ~|                 |::|   |          
+         /:::/    /            \::::::/    /                                    /:::/    /             |::|   |                 |::|   |          
+        /:::/    /              \::::/    /                                    /:::/    /              \::|   |                 \::|   |          
+        \::/    /                \::/____/                                     \::/    /                \:|   |                  \:|   |          
+         \/____/                  ~~                                            \/____/                  \|___|                   \|___|          
+                                                                                                                                                  
 
 ├─ Configuration ────────────────────────────────────────────────────┤
 [i] Network: sepolia
@@ -568,7 +596,7 @@ Decentralized • Immutable • Trustless                          v0.1.0
 **Wait ~30 seconds** (depending on build size)
 
 ```
-[+] Uploaded to IPFS: bafybeiabc123def456ghi789jkl012mno345pqr678
+[+] Uploaded to IPFS: bafybeiabc123de...qr678
 [i] Size: 2.4 MB
 [i] Gateway: https://bafybeiabc123...ipfs.w3s.link
 ```
@@ -609,7 +637,7 @@ Next Steps:
 
 ### Step 4: Approve in Safe UI
 
-**Click the Safe UI link** or go to https://app.safe.global
+**Click the Safe UI link** or go to [https://app.safe.global](https://app.safe.global)
 
 1. **Connect wallet** (must be a Safe signer)
 
@@ -683,7 +711,7 @@ Next Steps:
    - Watch status in Safe UI
    - "Success" badge appears
 
-**Congratulations! Your first deployment is live! 🎉**
+**Congratulations! Your first deployment is live!**
 
 ### Step 7: Access Your Deployment
 
@@ -730,11 +758,11 @@ autark status --subdomain v0.myproject.eth
 ```
 
 **What this means:**
-- ✅ Nobody can change the contenthash (not even Safe)
-- ✅ Nobody can change the resolver
-- ✅ Nobody can unwrap the domain
-- ✅ Parent cannot revoke the subdomain
-- ✅ This deployment will exist forever
+1. Nobody can change the contenthash (not even Safe)
+2. Nobody can change the resolver
+3. Nobody can unwrap the domain
+4. Parent cannot revoke the subdomain
+5. This deployment will exist forever
 
 ---
 
@@ -828,10 +856,28 @@ git push origin staging
 ```
 [>  ] autark: Auto-deploying staging branch...
 
-          _____                    _____
-         /\    \                  /\    \
-
-Decentralized • Immutable • Trustless                          v0.1.0
+          _____                    _____                _____                    _____                    _____                    _____          
+         /\    \                  /\    \              /\    \                  /\    \                  /\    \                  /\    \         
+        /::\    \                /::\____\            /::\    \                /::\    \                /::\    \                /::\____\        
+       /::::\    \              /:::/    /            \:::\    \              /::::\    \              /::::\    \              /:::/    /        
+      /::::::\    \            /:::/    /              \:::\    \            /::::::\    \            /::::::\    \            /:::/    /         
+     /:::/\:::\    \          /:::/    /                \:::\    \          /:::/\:::\    \          /:::/\:::\    \          /:::/    /          
+    /:::/__\:::\    \        /:::/    /                  \:::\    \        /:::/__\:::\    \        /:::/__\:::\    \        /:::/____/           
+   /::::\   \:::\    \      /:::/    /                   /::::\    \      /::::\   \:::\    \      /::::\   \:::\    \      /::::\    \           
+  /::::::\   \:::\    \    /:::/    /      _____        /::::::\    \    /::::::\   \:::\    \    /::::::\   \:::\    \    /::::::\____\________  
+ /:::/\:::\   \:::\    \  /:::/____/      /\    \      /:::/\:::\    \  /:::/\:::\   \:::\    \  /:::/\:::\   \:::\____\  /:::/\:::::::::::\    \ 
+/:::/  \:::\   \:::\____\|:::|    /      /::\____\    /:::/  \:::\____\/:::/  \:::\   \:::\____\/:::/  \:::\   \:::|    |/:::/  |:::::::::::\____\
+\::/    \:::\  /:::/    /|:::|____\     /:::/    /   /:::/    \::/    /\::/    \:::\  /:::/    /\::/   |::::\  /:::|____|\::/   |::|~~~|~~~~~     
+ \/____/ \:::\/:::/    /  \:::\    \   /:::/    /   /:::/    / \/____/  \/____/ \:::\/:::/    /  \/____|:::::\/:::/    /  \/____|::|   |          
+          \::::::/    /    \:::\    \ /:::/    /   /:::/    /                    \::::::/    /         |:::::::::/    /         |::|   |          
+           \::::/    /      \:::\    /:::/    /   /:::/    /                      \::::/    /          |::|\::::/    /          |::|   |          
+           /:::/    /        \:::\__/:::/    /    \::/    /                       /:::/    /           |::| \::/____/           |::|   |          
+          /:::/    /          \::::::::/    /      \/____/                       /:::/    /            |::|  ~|                 |::|   |          
+         /:::/    /            \::::::/    /                                    /:::/    /             |::|   |                 |::|   |          
+        /:::/    /              \::::/    /                                    /:::/    /              \::|   |                 \::|   |          
+        \::/    /                \::/____/                                     \::/    /                \:|   |                  \:|   |          
+         \/____/                  ~~                                            \/____/                  \|___|                   \|___|          
+                                                                                                                                                  
 
 ├─ Configuration ────────────────────────────────────────────────────┤
 [i] Network: sepolia
@@ -1378,7 +1424,7 @@ Failed to burn parent fuses: 0xb455aae8 (Unauthorised)
 
 Burn fuses via Safe:
 
-1. Go to https://app.safe.global
+1. Go to [https://app.safe.global](https://app.safe.global)
 2. Select your Safe
 3. New Transaction → Contract Interaction
 4. Enter details:
@@ -1584,15 +1630,15 @@ cat .git/hooks/pre-push | grep DEPLOY_BRANCH
 
 **You've learned how to:**
 
-✅ Install Autark and prerequisites
-✅ Register and wrap ENS domains
-✅ Create and configure Safe multisig
-✅ Initialize project configuration
-✅ Deploy your first frontend to IPFS + ENS
-✅ Set up git hooks for auto-deployment
-✅ Configure GitHub Actions CI/CD
-✅ Manage and verify deployments
-✅ Troubleshoot common issues
+☑ Install Autark and prerequisites
+☑ Register and wrap ENS domains
+☑ Create and configure Safe multisig
+☑ Initialize project configuration
+☑ Deploy your first frontend to IPFS + ENS
+☑ Set up git hooks for auto-deployment
+☑ Configure GitHub Actions CI/CD
+☑ Manage and verify deployments
+☑ Troubleshoot common issues
 
 **Your workflow is now:**
 
@@ -1601,15 +1647,13 @@ Code → Commit → Push → Auto-Deploy → Review in Safe → Approve → Live
 ```
 
 **All deployments are:**
-- 🌐 Decentralized (IPFS)
-- 🔒 Immutable (burned fuses)
-- 🏛️ Governed (Safe multisig)
-- ♾️ Permanent (versioned forever)
+- Decentralized (IPFS)
+- Immutable (burned fuses)
+- Governed (Safe multisig)
+- Permanent (versioned forever)
 
 **Welcome to truly decentralized deployments!**
 
 ---
 
-**Built at ETHRome Hackathon 2024**
-
-*Decentralized • Immutable • Trustless*
+**Built at ETHRome 2025**
