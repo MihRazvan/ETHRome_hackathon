@@ -3,7 +3,7 @@
 
 Autark is a crypto-anarchic `DevSecOps` framework for more secure, and self-sovereign frontend deployments; embracing immutable, decentralized, and multi-party-verified frontend governance through Safe + ENS + IPFS.
 
-[Demo]() | [User Guide](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/USER-GUIDE.md) | [Technical Architecture](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/TECHNICAL-ARCHITECTURE.md) | [Flow Chart](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/FLOW-CHART.md) | [Submission](https://taikai.network/ethrome/hackathons/2025/projects/cmgx4r1we02d112kkxt8y1sxi/idea)
+[Demo](https://www.youtube.com/watch?v=-pGsHpUI0J0) | [User Guide](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/USER-GUIDE.md) | [Technical Architecture](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/TECHNICAL-ARCHITECTURE.md) | [Flow Chart](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/FLOW-CHART.md) | [Submission](https://taikai.network/ethrome/hackathons/2025/projects/cmgx4r1we02d112kkxt8y1sxi/idea)
 
 ---
 
