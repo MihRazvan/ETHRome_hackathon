@@ -52,7 +52,7 @@ Autark replaces “trust” with verifiable processes and cryptographic finality
 
 > Each release becomes an immutable record, and an auditable artifact of a more secure frontend versioning deployment.
 
-Explore: detailed [Technical Architecture]() and extended [Flow Chart]().
+Explore: detailed [Technical Architecture](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/TECHNICAL-ARCHITECTURE.md) and extended [Flow Chart](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/FLOW-CHART.md).
 
 ---
 
@@ -64,7 +64,7 @@ autark init
 autark deploy dist
 ```
 
-Explore: detailed [User Guide]().
+Explore: detailed [User Guide](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/USER-GUIDE.md).
 
 ---
 
