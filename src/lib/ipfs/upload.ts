@@ -60,7 +60,8 @@ export async function uploadToIPFS(
         encoding: 'utf-8',
         stdio: 'pipe',
       })
-      size = parseInt(sizeOutput.split('\t')[0]) * 1024 // Convert KB to bytes
+      const sizeStr = sizeOutput.split('\t')[0]
+      size = sizeStr ? parseInt(sizeStr) * 1024 : 0 // Convert KB to bytes
     } catch {
       // Size calculation failed, continue anyway
     }

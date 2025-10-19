@@ -49,7 +49,7 @@ export function createDeploymentPlan(
   const parentNode = namehash(normalize(parentDomain))
   const subdomainNode = namehash(normalize(fullDomain))
   const contentHash = encodeContentHash(cid)
-  const resolverAddress = PUBLIC_RESOLVER_ADDRESS[network]
+  const resolverAddress = PUBLIC_RESOLVER_ADDRESS[network] as Address
 
   // Transaction 1: Create subdomain owned by Safe
   const expiry = 2524608000n // Far future

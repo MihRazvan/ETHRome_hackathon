@@ -13,6 +13,7 @@ config()
 import { deployCommand } from './commands/deploy.js'
 import { statusCommand } from './commands/status.js'
 import { initCommand } from './commands/init.js'
+import { setupCommand } from './commands/setup.js'
 import { readFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
@@ -25,7 +26,7 @@ const packageJson = JSON.parse(
 const program = new Command()
 
 program
-  .name('secure-deploy')
+  .name('autark')
   .description('Deploy frontends with Safe multisig + immutable ENS versioning')
   .version(packageJson.version)
 
@@ -68,6 +69,18 @@ program
   .description('Initialize configuration file')
   .action(async () => {
     await initCommand()
+  })
+
+// Setup command
+program
+  .command('setup')
+  .description('Setup git hooks for automatic deployment')
+  .option('--branch <branch>', 'Branch to trigger deployments (default: staging)')
+  .option('--force', 'Overwrite existing hooks')
+  .option('--quiet', 'Minimal output')
+  .option('--debug', 'Debug output')
+  .action(async (options) => {
+    await setupCommand(options)
   })
 
 // Parse CLI arguments
