@@ -1,6 +1,6 @@
 # Autark Technical Architecture
 
-**Preventing Frontend Injection Attacks Through Immutable Versioning and Human Verification**
+**Preventing Frontend Injection Attacks Through Immutable Versioning and Multi-Party Verification**
 
 ---
 
@@ -14,9 +14,7 @@ In the Lazarus Group attack on Bybit/Safe (2025), the attack vector was simple b
 2. Attacker pushes malicious code directly to main branch
 3. CI/CD automatically triggers (trusted process)
 4. Code deploys to production immediately (2-10 minutes)
-5. Users' wallets drained
-
-**The critical insight:** Even with Safe multisig, the attack succeeds because **signers can't see what they're approving**.
+5. ByBits' wallet drained
 
 ### Current "Solutions" Fail
 
@@ -25,25 +23,10 @@ In the Lazarus Group attack on Bybit/Safe (2025), the attack vector was simple b
 Compromised dev → Push to main → Auto-deploy → Live in 2 min ❌
 ```
 - Single point of failure
-- No human verification
+- No Multi-Party verification
 - Immediate deployment
 
-**Current Web3 with Safe Multisig:**
-```
-Compromised dev → Push to main → IPFS upload → Safe proposal
-→ Signers see "0xe301017012..." → Approve blindly → Live ❌
-```
-- Better: Requires multiple signatures
-- Problem: **Signers have zero context**
-- Result: "Approval fatigue" - signers rubber-stamp transactions
-
-### The Critical Gap
-
-**Safe multisig works in theory, fails in practice** because signers only see encoded transaction data. They can't tell if a deployment is malicious or legitimate, so approval becomes a formality, not a security checkpoint.
-
 ---
-
-## Our Solution: Human Verification + Immutable Versioning
 
 ### Core Innovation
 
@@ -51,24 +34,21 @@ Slow down the deployment process and create an immutable audit trail through:
 
 1. **Creating immutable versioned subdomains** - Each version locked forever via ENS fuses
 2. **Preventing version waste** - Batched Safe transactions (atomic subdomain creation + content setting)
-3. **Requiring human approval** - Safe multisig checkpoint before deployment goes live
+3. **Requiring multi-party approval** - Safe multisig checkpoint before deployment goes live
 
 Signers can preview the deployment on IPFS (via the CID in the transaction data) before approving, adding a human verification checkpoint to the automated CI/CD pipeline.
 
-### The Three-Layer Security Model
+### The Two-Layer Security Model
 
-**Layer 1: Human Approval Checkpoint**
+**Layer 1: Multi-Party Approval Checkpoint**
 - Safe multisig requires threshold approval (e.g., 2 of 3, 3 of 5)
 - Signers can preview deployment on IPFS (decode CID from transaction)
 - Slows down automated CI/CD pipeline, forcing human review
-
-**Layer 2: Threshold Governance**
-- Requires multiple signatures to deploy
 - Prevents single compromised developer from deploying alone
-- Distributes trust across team members
+- Distributes trust across `dev` team members
 
-**Layer 3: Cryptographic Immutability**
-- ENS NameWrapper burns fuses on subdomain
+**Layer 2: Cryptographic Immutability**
+- ENS `NameWrapper` burns fuses on subdomain
 - Once deployed, **nobody** can change it (not even Safe signers)
 - Attackers can't modify past deployments even if they compromise Safe later
 
@@ -93,7 +73,7 @@ AUTARK CLI:
     ↓
 Safe Transaction Service (stores proposal)
     ↓
-HUMAN VERIFICATION ← This is where we slow down attacks!
+Multi-Party VERIFICATION ← This is where we slow down attacks!
     • Signers review proposal in Safe UI
     • Can decode CID from transaction data
     • Preview deployment on IPFS before approving
@@ -154,7 +134,7 @@ Deployment Live (permanently immutable)
   - `CANNOT_SET_RESOLVER` - Can't change resolver (contenthash locked)
   - `PARENT_CANNOT_CONTROL` - Parent can't revoke subdomain
 
-**Why NameWrapper Fuses?**
+**Why `NameWrapper` Fuses?**
 
 This is the **key to immutability**. Once fuses are burned:
 - Subdomain owner (Safe) cannot change contenthash
@@ -167,7 +147,7 @@ Even if an attacker compromises the Safe later, they cannot modify existing vers
 ### Safe: Threshold-Based Governance
 
 **Why Safe?**
-- **Multisig**: Requires M of N signers (e.g., 2 of 3, 3 of 5)
+- **Multisig**: Requires M of N signers (e.g., 2 of 3, 3 of 5, etc.)
 - **Transaction batching**: Multiple operations in one transaction
 - **Off-chain coordination**: Safe Transaction Service stores proposals
 - **Well-tested**: Battle-tested infrastructure used by major protocols
@@ -216,14 +196,14 @@ This prevents version pollution from rejected proposals.
 5. Execute → Both operations happen together
 
 **Advantages:**
-- ✅ Atomic deployment (all or nothing)
-- ✅ No wasted versions if rejected
-- ✅ Full governance over entire domain
-- ✅ Cleaner version history
+- ☑ Atomic deployment (all or nothing)
+- ☑ No wasted versions if rejected
+- ☑ Full governance over entire domain
+- ☑ Cleaner version history
 
 **Trade-offs:**
-- ⚠️ Requires transferring domain to Safe (scary for some users)
-- ⚠️ All operations require Safe approval (slower)
+- Requires transferring domain to Safe (scary for some users)
+- All operations require Safe approval (slower)
 
 ### Mode 2: Personal-Owns-Parent
 
@@ -238,8 +218,8 @@ This prevents version pollution from rejected proposals.
 5. Execute → Contenthash set
 
 **Advantages:**
-- ✅ Don't need to transfer domain to Safe
-- ✅ Can create subdomains quickly
+- ☑ Don't need to transfer domain to Safe
+- ☑ Can create subdomains quickly
 
 **Our Recommendation:** Safe-owns-parent for production (better governance, cleaner versions).
 
@@ -281,11 +261,11 @@ Users who want latest can use myapp.eth → points to latest
 - Self-hosted IPFS (free, but need to maintain nodes)
 
 **Chose IPFS + Storacha because:**
-- ✅ ENS native support (contenthash field designed for IPFS)
-- ✅ Storacha handles pinning/persistence
-- ✅ Free tier sufficient for most projects
-- ✅ Multiple gateways available (.limo, .link, w3s.link)
-- ✅ Mature ecosystem and tooling
+- ☑ ENS native support (contenthash field designed for IPFS)
+- ☑ Storacha handles pinning/persistence
+- ☑ Free tier sufficient for most projects
+- ☑ Multiple gateways available (.limo, .link, w3s.link)
+- ☑ Mature ecosystem and tooling
 
 **Future:** Could add Arweave as alternative storage option.
 
@@ -297,11 +277,11 @@ Users who want latest can use myapp.eth → points to latest
 - Snapshot voting for updates
 
 **Chose ENS fuses because:**
-- ✅ Native to ENS (no additional contracts)
-- ✅ Cryptographically enforced (not social consensus)
-- ✅ Battle-tested (ENS NameWrapper live on mainnet)
-- ✅ Cannot be bypassed (even by Safe signers)
-- ✅ Gas efficient (one-time burn)
+- ☑ Native to ENS (no additional contracts)
+- ☑ Cryptographically enforced (not social consensus)
+- ☑ Battle-tested (ENS NameWrapper live on mainnet)
+- ☑ Cannot be bypassed (even by Safe signers)
+- ☑ Gas efficient (one-time burn)
 
 **Trade-off:** Fuses are permanent (by design). Cannot undo once burned.
 
@@ -323,9 +303,9 @@ if (parentOwner === safeAddress) {
 ```
 
 **Why:**
-- ✅ Less user error
-- ✅ Clearer UX (tool "just works")
-- ✅ Can't accidentally use wrong mode
+- ☑ Less user error
+- ☑ Clearer UX (tool "just works")
+- ☑ Can't accidentally use wrong mode
 
 ---
 
@@ -333,25 +313,25 @@ if (parentOwner === safeAddress) {
 
 ### What We Protect Against
 
-**✅ Compromised Developer Machine**
+**☑ Compromised Developer Machine**
 - Attacker pushes malicious code
 - CI/CD builds and uploads to IPFS
 - Safe proposal created
 - Requires threshold approval (can't deploy alone)
 - **Result:** Attack slowed down, requires compromising multiple signers
 
-**✅ Fast Automated Deployments**
+**☑ Fast Automated Deployments**
 - Traditional CI/CD: Push → Live in 2 minutes
 - Our tool: Push → IPFS → Safe proposal → Wait for approvals
 - **Result:** Human checkpoint in the automated pipeline
 
-**✅ Post-Deployment Tampering**
+**☑ Post-Deployment Tampering**
 - Attacker compromises Safe after deployment
 - Tries to change v3.myapp.eth contenthash
 - Fuses prevent modification (transaction reverts)
 - **Result:** Past deployments remain safe
 
-**✅ Accidental Wrong Deployment**
+**☑ Accidental Wrong Deployment**
 - Developer accidentally merges breaking change
 - Safe signers review, spot the issue
 - Reject deployment
@@ -428,11 +408,11 @@ Instead of trying to detect attacks automatically, we:
 - **Trade velocity for security**
 
 **Who this is for:**
-- ✅ Financial dApps (Uniswap, Aave, etc.)
-- ✅ DAO frontends (where funds are at stake)
-- ✅ Critical infrastructure (bridges, multisigs)
-- ❌ Rapid prototyping / hobby projects
-- ❌ Applications where speed > security
+- ☑ Financial dApps (Uniswap, Aave, etc.)
+- ☑ DAO frontends (where funds are at stake)
+- ☑ Critical infrastructure (bridges, multisigs)
+- x Rapid prototyping / hobby projects
+- x Applications where speed > security
 
 ---
 
@@ -477,6 +457,4 @@ Autark addresses a **critical gap** in Web3 frontend security: fully automated C
 
 ---
 
-**Built at ETHRome Hackathon 2024**
-
-*Decentralized • Immutable • Trustless*
+**Built at ETHRome 2025 Hackathon**
