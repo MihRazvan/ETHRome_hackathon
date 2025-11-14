@@ -3,7 +3,7 @@
 
 Autark is a crypto-anarchic `DevSecOps` framework for more secure, and self-sovereign frontend deployments; embracing immutable, decentralized, and multi-party-verified frontend governance through Safe + ENS + IPFS.
 
-[Demo](https://www.youtube.com/watch?v=-pGsHpUI0J0) | [User Guide](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/docs/USER-GUIDE.md) | [Technical Architecture](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/docs/TECHNICAL-ARCHITECTURE.md) | [Flow Chart](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/docs/FLOW-CHART.md) | [Submission](https://taikai.network/ethrome/hackathons/2025/projects/cmgx4r1we02d112kkxt8y1sxi/idea)
+[Demo](https://www.youtube.com/watch?v=-pGsHpUI0J0) | [User Guide](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/docs/USER-GUIDE.md) | [Technical Architecture](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/docs/TECHNICAL-ARCHITECTURE.md) | [Flow Chart](https://github.com/MihRazvan/ETHRome_hackathon/blob/main/docs/FLOW-CHART.md) | [Submission](https://taikai.network/ethrome/hackathons/2025/projects/cmgx4r1we02d112kkxt8y1sxi/idea) | [Safe DAO Proposal](https://forum.safe.global/t/grant-proposal-supporting-autark-a-secure-self-sovereign-frontend-deployment-framework-built-on-safe/6799)
 
 ---
 
@@ -31,7 +31,7 @@ It transforms how teams ship code by introducing a meta-governance layer for fro
 
 ## Core Principles
 
-1. **ENFORCE BETTER **
+1. **ENFORCE BETTER**
 *Every deployment passes through explicit multi-party verification, and immutable cryptographic sealing.*
 
 2. **REJECT CENTRALIZED GATEKEEPERS**
@@ -78,7 +78,7 @@ Explore: detailed [User Guide](https://github.com/MihRazvan/ETHRome_hackathon/bl
 | Automation   | **Git Hooks + GitHub Actions** | DevSecOps enforcement layer            |
 | Language     | **Node.js / TypeScript**       | CLI and automation scripting           |
 
-> [Autarky](https://en.wikipedia.org/wiki/Autarky) in code: build sovereign software, enforce your devops security.
+> [Autarky](https://en.wikipedia.org/wiki/Autarky) in code: build sovereign software, enforce your `devops` security.
 
 ---
 
